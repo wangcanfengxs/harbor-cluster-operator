@@ -54,11 +54,15 @@ func init() {
 
 func main() {
 	var metricsAddr string
-	var enableLeaderElection bool
+	var leaderElectionEnabled bool
+	var leaderElectionId string
+	var leaderElectionNamespace string
 	var requeueAfter time.Duration
 	flag.StringVar(&metricsAddr, "metrics-addr", ":8080", "The address the metric endpoint binds to.")
-	flag.BoolVar(&enableLeaderElection, "enable-leader-election", false,
+	flag.BoolVar(&leaderElectionEnabled, "leader-election", false,
 		"Enable leader election for controller manager. Enabling this will ensure there is only one active controller manager.")
+	flag.StringVar(&leaderElectionId, "leader-election-id", "harbor-cluster-operator-leader", "the resource name of leader election.")
+	flag.StringVar(&leaderElectionNamespace, "leader-election-namespace", "default", "the namespace for the resource of leader election.")
 	flag.DurationVar(&requeueAfter, "requeue-after", 5, "The delay time(second) of Requeue.")
 	flag.Parse()
 
@@ -69,9 +73,9 @@ func main() {
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
 		Scheme:                  scheme,
 		MetricsBindAddress:      metricsAddr,
-		LeaderElection:          enableLeaderElection,
-		LeaderElectionID:        "configmap-name",
-		LeaderElectionNamespace: "default",
+		LeaderElection:          leaderElectionEnabled,
+		LeaderElectionID:        leaderElectionId,
+		LeaderElectionNamespace: leaderElectionNamespace,
 		Port:                    9443,
 	})
 	if err != nil {

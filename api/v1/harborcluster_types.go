@@ -410,6 +410,8 @@ type HarborClusterCondition struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:printcolumn:name="PUBLIC URL", type=string,JSONPath=`.spec.publicURL`
+// +kubebuilder:printcolumn:name="VERSION", type=string,JSONPath=`.spec.version`
 
 // HarborCluster is the Schema for the harborclusters API
 type HarborCluster struct {
